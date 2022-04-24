@@ -1,11 +1,11 @@
 package main
 
 import (
-	"context"
 	"fmt"
 
 	"github.com/bueti/learn_go/rest-api/internal/comment"
 	"github.com/bueti/learn_go/rest-api/internal/db"
+	transportHttp "github.com/bueti/learn_go/rest-api/internal/transport/http"
 )
 
 // is responsible for the instantiation
@@ -25,17 +25,10 @@ func Run() error {
 
 	cmtService := comment.NewService(db)
 
-	cmtService.PostComment(
-		context.Background(),
-		comment.Comment{
-			ID:     "71c5d074-b6cf-11ec-b909-0242ac120002",
-			Slug:   "manual-test",
-			Author: "Ben",
-			Body:   "Hello World",
-		},
-	)
-
-	fmt.Println(cmtService.GetComment(context.Background(), "71c5d074-b6cf-11ec-b909-0242ac120002"))
+	httpHandler := transportHttp.NewHandler(cmtService)
+	if err := httpHandler.Serve(); err != nil {
+		return err
+	}
 
 	return nil
 }

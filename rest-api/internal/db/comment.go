@@ -87,8 +87,8 @@ func (d *Database) UpdateComment(ctx context.Context, id string, cmt comment.Com
 	rows, err := d.Client.NamedQueryContext(
 		ctx,
 		`UPDATE comments SET
-		slug = :slug
-		author = :author
+		slug = :slug,
+		author = :author,
 		body = :body
 		WHERE id = :id`,
 		cmtRow,
@@ -97,7 +97,7 @@ func (d *Database) UpdateComment(ctx context.Context, id string, cmt comment.Com
 		return comment.Comment{}, fmt.Errorf("failed to update the comment: %w", err)
 	}
 	if err := rows.Close(); err != nil {
-		return comment.Comment{}, fmt.Errorf("Failed to close rows: %w", err)
+		return comment.Comment{}, fmt.Errorf("failed to close rows: %w", err)
 	}
 	return convertCommentRowToComment(cmtRow), nil
 }
